@@ -9,11 +9,11 @@
 | Key            | Value                                    |
 | -------------- | ---------------------------------------- |
 | **App Name**   | Amir App                                 |
-| **Framework**  | Next.js 16 (App Router)                  |
-| **Language**   | TypeScript (Strict Mode)                 |
-| **Styling**    | Tailwind CSS v4                          |
-| **PWA**        | Serwist v9                               |
-| **Linting**    | ESLint v9 + eslint-config-next           |
+| **Framework**  | Next.js 16.2.6 (App Router)              |
+| **Language**   | TypeScript 6 (Strict Mode)               |
+| **Styling**    | Tailwind CSS v4.3                        |
+| **PWA**        | Serwist v9.5                             |
+| **Linting**    | ESLint v10 + eslint-config-next          |
 | **Node**       | ≥ 18                                     |
 | **Package Mgr**| npm                                      |
 

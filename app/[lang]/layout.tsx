@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "./dictionaries";
 import { i18n } from "@/i18n/config";
+import { generatePageSeo, generateOrganizationJsonLd } from "@/lib/seo";
 import "../globals.css";
 
 const geistSans = Geist({
@@ -31,8 +32,11 @@ export async function generateMetadata({
   const dict = await getDictionary(lang);
 
   return {
-    title: dict.metadata.title,
-    description: dict.metadata.description,
+    ...generatePageSeo({
+      title: dict.metadata.title,
+      description: dict.metadata.description,
+      locale: lang,
+    }),
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
@@ -41,11 +45,18 @@ export async function generateMetadata({
     formatDetection: {
       telephone: false,
     },
+    metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   };
 }
 
 export const viewport: Viewport = {
-  themeColor: "#000000",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default async function LangLayout({
@@ -58,11 +69,22 @@ export default async function LangLayout({
     notFound();
   }
 
+  const organizationJsonLd = generateOrganizationJsonLd();
+
   return (
     <html
       lang={lang}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* JSON-LD Structured Data — Organization */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

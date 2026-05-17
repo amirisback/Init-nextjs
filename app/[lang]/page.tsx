@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getDictionary, hasLocale } from "./dictionaries";
+import { generateWebsiteJsonLd } from "@/lib/seo";
+import type { Locale } from "@/i18n/config";
 
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
@@ -10,9 +12,18 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
   }
 
   const dict = await getDictionary(lang);
+  const websiteJsonLd = generateWebsiteJsonLd(lang as Locale);
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      {/* JSON-LD Structured Data — WebSite (for Google Sitelinks Search Box) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(websiteJsonLd),
+        }}
+      />
+
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <Image
           className="dark:invert"
