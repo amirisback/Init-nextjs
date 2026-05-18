@@ -10,7 +10,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage"
+    "test:cov": "vitest run --coverage",
+    "cli": "bun run cli/index.ts"
   },
   "dependencies": {
     "@serwist/next": "^9.5.11",
