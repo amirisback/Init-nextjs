@@ -15,7 +15,7 @@
 | **PWA**        | Serwist v9.5                             |
 | **Linting**    | ESLint v10 + eslint-config-next          |
 | **Node**       | ≥ 18                                     |
-| **Package Mgr**| npm                                      |
+| **Package Mgr**| Bun                                      |
 
 ---
 
@@ -183,7 +183,7 @@ import { SomeComponent } from "../../../_components/some-component";
 - Update `manifest.ts` jika mengubah app name, icon, atau theme
 - Jangan edit `sw.ts` kecuali butuh custom caching strategy
 - Icon PWA harus tersedia di `/public/`
-- Test PWA di production build (`npm run build && npm start`)
+- Test PWA di production build (`bun run build && bun start`)
 
 ---
 
@@ -515,13 +515,16 @@ global.fetch = mockFetch;
 
 | Command              | Fungsi                                  |
 | -------------------- | --------------------------------------- |
-| `npm run dev`        | Jalankan dev server (dengan webpack)    |
-| `npm run build`      | Build production bundle (dengan webpack)|
-| `npm start`          | Jalankan production server              |
-| `npm run lint`       | Jalankan ESLint                         |
-| `npm test`           | Jalankan semua unit test                |
-| `npm run test:watch` | Jalankan test dalam watch mode          |
-| `npm run test:cov`   | Jalankan test dengan coverage report    |
+| `bun run dev`        | Jalankan dev server (dengan webpack)    |
+| `bun run build`      | Build production bundle (dengan webpack)|
+| `bun start`          | Jalankan production server              |
+| `bun run lint`       | Jalankan ESLint                         |
+| `bun test`           | Jalankan semua unit test                |
+| `bun run test:watch` | Jalankan test dalam watch mode          |
+| `bun run test:cov`   | Jalankan test dengan coverage report    |
+| `bun install`        | Install semua dependencies              |
+| `bun add <pkg>`      | Tambah dependency baru                  |
+| `bun add -d <pkg>`   | Tambah dev dependency baru              |
 
 > **Note:** Flag `--webpack` sudah di-set di `package.json` scripts.
 
@@ -529,10 +532,10 @@ global.fetch = mockFetch;
 
 ## 13. Checklist Sebelum Push
 
-- [ ] `npm test` — Semua test PASS
-- [ ] `npm run test:cov` — Coverage ≥ 80%
-- [ ] `npm run lint` — Tidak ada error
-- [ ] `npm run build` — Build sukses tanpa error
+- [ ] `bun test` — Semua test PASS
+- [ ] `bun run test:cov` — Coverage ≥ 80%
+- [ ] `bun run lint` — Tidak ada error
+- [ ] `bun run build` — Build sukses tanpa error
 - [ ] Tidak ada `console.log` yang tertinggal (gunakan `LOG_LEVEL`)
 - [ ] Semua halaman punya metadata (title, description)
 - [ ] Dark mode berfungsi dengan baik
@@ -557,7 +560,7 @@ global.fetch = mockFetch;
 9. **Tambahkan translations** di kedua locale file (`id.json` & `en.json`)
 10. **Buat semua route** di bawah `app/[lang]/`
 11. **Buat unit test** untuk setiap fungsi/hook/utility baru yang di-export
-12. **Jalankan `npm test`** sebelum menganggap task selesai
+12. **Jalankan `bun test`** sebelum menganggap task selesai
 13. **Gunakan AAA pattern** (Arrange-Act-Assert) di setiap test case
 14. **Co-locate test files** — `*.test.ts(x)` di samping source file
 
