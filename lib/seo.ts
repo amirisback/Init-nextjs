@@ -149,6 +149,15 @@ export function generatePageSeo({
     robots: noIndex
       ? { index: false, follow: false }
       : { index: true, follow: true, "max-image-preview": "large" as const, "max-snippet": -1, "max-video-preview": -1 },
+    icons: {
+      icon: [
+        { url: '/icon-192x192.svg', sizes: '192x192', type: 'image/svg+xml' },
+        { url: '/icon-512x512.svg', sizes: '512x512', type: 'image/svg+xml' },
+      ],
+      apple: [
+        { url: '/icon-192x192.svg', sizes: '192x192', type: 'image/svg+xml' },
+      ],
+    },
     alternates: generateAlternates(pathname),
     openGraph: generateOgMetadata({ title: fullTitle, description, locale, pathname, images }),
     twitter: generateTwitterMetadata({ title: fullTitle, description }),
