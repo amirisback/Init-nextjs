@@ -76,15 +76,17 @@ export function generateOgMetadata({
 export function generateTwitterMetadata({
   title,
   description,
+  images,
 }: {
   title: string;
   description: string;
+  images?: string[];
 }): Metadata["twitter"] {
   return {
     card: "summary_large_image",
     title,
     description,
-    images: [`${seoConfig.siteUrl}/og-image.png`],
+    images: images ?? [`${seoConfig.siteUrl}/og-image.png`],
   };
 }
 
@@ -144,6 +146,7 @@ export function generatePageSeo({
   const fullTitle = pathname === "" ? title : `${title} — ${seoConfig.siteName}`;
 
   return {
+    metadataBase: new URL(seoConfig.siteUrl),
     title: fullTitle,
     description,
     robots: noIndex
@@ -160,6 +163,6 @@ export function generatePageSeo({
     },
     alternates: generateAlternates(pathname),
     openGraph: generateOgMetadata({ title: fullTitle, description, locale, pathname, images }),
-    twitter: generateTwitterMetadata({ title: fullTitle, description }),
+    twitter: generateTwitterMetadata({ title: fullTitle, description, images }),
   };
 }
