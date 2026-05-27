@@ -127,6 +127,11 @@ import { SomeComponent } from "../../../_components/some-component";
 - **JANGAN** gunakan `useEffect` untuk data fetching — gunakan Server Components atau Server Actions
 - Pisahkan komponen besar menjadi komponen kecil yang reusable
 
+### Routing & State Management
+- **Gunakan Flat Routing + SearchParams** untuk mengalirkan ID dari halaman/segmen sebelumnya ke segmen yang lebih dalam.
+- **HINDARI Nested Dynamic Routes** (folder bertingkat terlalu dalam) untuk menjaga struktur folder tetap rata (*flat*) dan mudah dinavigasi.
+- **HINDARI Shared Layout & React Context** untuk meneruskan parameter routing antar halaman; gunakan query parameters (`searchParams`) agar data fetching tetap optimal di Server Components.
+
 ### File Naming
 | Tipe         | Format              | Contoh                    |
 | ------------ | ------------------- | ------------------------- |
@@ -338,6 +343,7 @@ style(ui): adjust header spacing
 9. **Tambahkan translations** di kedua locale file (`id.json` & `en.json`)
 10. **Buat semua route** di bawah `app/[lang]/`
 11. **Gunakan `next/image`** (`Image` component dari `next/image`) untuk semua gambar di component React/Next.js
+12. **Gunakan Flat Routing + SearchParams** saat membutuhkan ID atau state dari halaman/segmen sebelumnya.
 
 ### ❌ JANGAN:
 1. **JANGAN** menggunakan `pages/` directory
@@ -351,8 +357,10 @@ style(ui): adjust header spacing
 9. **JANGAN** hardcode string UI — gunakan dictionary i18n
 10. **JANGAN** menggunakan `middleware.ts` — sudah deprecated, gunakan `proxy.ts`
 11. **JANGAN** menggunakan tag HTML `<img>` biasa di component React/Next.js — selalu gunakan `next/image` untuk optimasi performa dan SEO
+12. **JANGAN menggunakan Nested Dynamic Routes** yang terlalu dalam.
+13. **JANGAN menggunakan Shared Layout & React Context** untuk sekadar membagikan parameter routing antar halaman.
 
 ---
 
-> 📅 Last updated: 2026-05-17
+> 📅 Last updated: 2026-05-27
 
