@@ -53,16 +53,13 @@ Init-nextjs-app/
 │       ├── page.tsx            # Homepage (i18n)
 │       └── dictionaries.ts    # Dictionary loader (server-only)
 ├── i18n/                       # i18n configuration
-│   ├── config.ts              # Locale list & types
-│   └── config.test.ts         # 🧪 Unit test for config
+│   └── config.ts              # Locale list & types
 ├── lib/                        # Shared utilities
-│   ├── seo.ts                 # SEO helpers
-│   └── seo.test.ts            # 🧪 Unit test for seo
+│   └── seo.ts                 # SEO helpers
 ├── dictionaries/               # Translation files
 │   ├── id.json                # 🇮🇩 Bahasa Indonesia (default)
 │   └── en.json                # 🇬🇧 English
 ├── proxy.ts                    # Locale detection & redirect (replaces middleware)
-├── proxy.test.ts               # 🧪 Unit test for proxy
 ├── public/                     # Static assets
 ├── prompt_ai/                  # AI prompt templates (bukan source code)
 ├── .env                        # Common env (semua environment)
@@ -71,8 +68,6 @@ Init-nextjs-app/
 ├── .env.example                # Template referensi (committed ke git)
 ├── AGENTS.md                   # AI Agent rules (Next.js specific)
 ├── GUIDELINE.md                # 📌 File ini — project guidelines
-├── vitest.config.ts            # 🧪 Vitest configuration
-├── vitest.setup.ts             # 🧪 Vitest setup (jest-dom matchers)
 ├── next.config.ts              # Next.js configuration
 ├── tsconfig.json               # TypeScript config
 ├── eslint.config.mjs           # ESLint config
@@ -142,7 +137,6 @@ import { SomeComponent } from "../../../_components/some-component";
 | Utility      | `kebab-case.ts`     | `format-date.ts`          |
 | Type         | `kebab-case.ts`     | `user-types.ts`           |
 | Constant     | `UPPER_SNAKE_CASE`  | `API_ENDPOINTS`           |
-| Test         | `*.test.ts(x)`      | `seo.test.ts`             |
 
 ---
 
@@ -249,7 +243,7 @@ export default async function Page({ params }: PageProps<"/[lang]">) {
 ## 9. Performance & SEO
 
 ### Wajib dilakukan:
-- Gunakan **`next/image`** untuk semua gambar
+- Gunakan **`next/image`** untuk semua gambar (JANGAN gunakan tag HTML `<img>` biasa)
 - Gunakan **`next/font`** untuk fonts (sudah setup Geist)
 - Set **`metadata`** di setiap `layout.tsx` / `page.tsx`
 - Gunakan **semantic HTML** (`<main>`, `<section>`, `<article>`, dsb)
@@ -301,217 +295,7 @@ style(ui): adjust header spacing
 
 ---
 
-## 11. Unit Testing
-
-### Framework & Setup
-
-| Key                | Value                                        |
-| ------------------ | -------------------------------------------- |
-| **Test Runner**    | Vitest                                       |
-| **UI Testing**     | React Testing Library (`@testing-library/react`) |
-| **Coverage**       | `@vitest/coverage-v8`                        |
-| **Config**         | `vitest.config.ts` di root project           |
-
-### Setup Vitest Config:
-```typescript
-// vitest.config.ts
-import { defineConfig } from "vitest/config";
-import path from "path";
-
-export default defineConfig({
-  test: {
-    environment: "jsdom",
-    globals: true,
-    setupFiles: ["./vitest.setup.ts"],
-    include: ["**/*.test.{ts,tsx}"],
-    coverage: {
-      provider: "v8",
-      reporter: ["text", "html", "lcov"],
-      include: ["lib/**", "app/**", "i18n/**"],
-      exclude: ["**/*.d.ts", "**/node_modules/**"],
-      thresholds: {
-        statements: 80,
-        branches: 80,
-        functions: 80,
-        lines: 80,
-      },
-    },
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "."),
-    },
-  },
-});
-```
-
-```typescript
-// vitest.setup.ts
-import "@testing-library/jest-dom/vitest";
-```
-
-### Aturan Wajib:
-
-```
-‼️ SETIAP fungsi yang di-export HARUS memiliki unit test.
-   Tidak boleh push kode tanpa test yang meng-cover fungsi tersebut.
-```
-
-1. **Setiap file utility/helper** (`lib/*.ts`, `i18n/*.ts`) → WAJIB punya file test
-2. **Setiap custom hook** (`use-*.ts`) → WAJIB punya file test
-3. **Setiap fungsi di proxy/middleware** → WAJIB punya file test
-4. **Component logic** (non-trivial) → WAJIB punya file test
-5. **Minimum coverage target** → **80%** (statements, branches, functions, lines)
-
-### File Naming & Lokasi:
-
-| Source File              | Test File                        | Lokasi          |
-| ------------------------ | -------------------------------- | --------------- |
-| `lib/seo.ts`             | `lib/seo.test.ts`                | Co-locate       |
-| `lib/format-date.ts`     | `lib/format-date.test.ts`        | Co-locate       |
-| `i18n/config.ts`         | `i18n/config.test.ts`            | Co-locate       |
-| `proxy.ts`               | `proxy.test.ts`                  | Co-locate       |
-| `app/_hooks/use-auth.ts` | `app/_hooks/use-auth.test.ts`    | Co-locate       |
-| `app/.../user-card.tsx`  | `app/.../user-card.test.tsx`     | Co-locate       |
-
-> **Prinsip:** Test file SELALU co-locate (satu folder) dengan source file.
-
-### Test Structure — AAA Pattern:
-
-```typescript
-import { describe, it, expect, vi } from "vitest";
-
-describe("functionName", () => {
-  it("should [expected behavior] when [condition]", () => {
-    // Arrange — setup data dan dependencies
-    const input = "test-input";
-
-    // Act — jalankan fungsi yang ditest
-    const result = functionName(input);
-
-    // Assert — verifikasi hasil
-    expect(result).toBe("expected-output");
-  });
-});
-```
-
-### Contoh Test — SEO Helpers (`lib/seo.test.ts`):
-
-```typescript
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  generateAlternates,
-  generateOgMetadata,
-  generateTwitterMetadata,
-  generateWebsiteJsonLd,
-  generateOrganizationJsonLd,
-  generatePageSeo,
-  seoConfig,
-} from "./seo";
-
-describe("generateAlternates", () => {
-  it("should generate canonical URL with default locale", () => {
-    const result = generateAlternates("/about");
-    expect(result.canonical).toContain(`/${seoConfig.defaultLocale}/about`);
-  });
-
-  it("should include all supported locales in languages", () => {
-    const result = generateAlternates("/about");
-    for (const locale of seoConfig.locales) {
-      expect(result.languages[locale]).toBeDefined();
-    }
-  });
-});
-
-describe("generateOgMetadata", () => {
-  it("should return correct OG locale for id", () => {
-    const result = generateOgMetadata({
-      title: "Test",
-      description: "Desc",
-      locale: "id",
-    });
-    expect(result?.locale).toBe("id_ID");
-  });
-
-  it("should return correct OG locale for en", () => {
-    const result = generateOgMetadata({
-      title: "Test",
-      description: "Desc",
-      locale: "en",
-    });
-    expect(result?.locale).toBe("en_US");
-  });
-});
-
-describe("generatePageSeo", () => {
-  it("should set noIndex robots when noIndex is true", () => {
-    const result = generatePageSeo({
-      title: "Test",
-      description: "Desc",
-      locale: "id",
-      noIndex: true,
-    });
-    expect(result.robots).toEqual({ index: false, follow: false });
-  });
-});
-```
-
-### Contoh Test — i18n Config (`i18n/config.test.ts`):
-
-```typescript
-import { describe, it, expect } from "vitest";
-import { i18n } from "./config";
-import type { Locale } from "./config";
-
-describe("i18n config", () => {
-  it("should have 'id' as default locale", () => {
-    expect(i18n.defaultLocale).toBe("id");
-  });
-
-  it("should include all required locales", () => {
-    expect(i18n.locales).toContain("id");
-    expect(i18n.locales).toContain("en");
-  });
-
-  it("should have default locale included in locales array", () => {
-    expect(i18n.locales).toContain(i18n.defaultLocale);
-  });
-});
-```
-
-### Mocking Patterns:
-
-```typescript
-// Mock environment variables
-vi.stubEnv("NEXT_PUBLIC_APP_URL", "https://test.com");
-
-// Mock module
-vi.mock("@/i18n/config", () => ({
-  i18n: { defaultLocale: "id", locales: ["id", "en"] },
-}));
-
-// Mock Next.js modules
-vi.mock("next/server", () => ({
-  NextResponse: {
-    redirect: vi.fn((url) => ({ redirectUrl: url })),
-  },
-}));
-
-// Mock fetch / external calls
-const mockFetch = vi.fn();
-global.fetch = mockFetch;
-```
-
-### ⚠️ JANGAN:
-- **JANGAN** menulis test tanpa assertion — setiap `it()` HARUS punya `expect()`
-- **JANGAN** test implementation details — test behavior/output
-- **JANGAN** skip test tanpa komentar alasan (`it.skip` butuh TODO comment)
-- **JANGAN** hardcode URL/values yang sudah ada di config — import dari source
-- **JANGAN** mock terlalu banyak — lebih baik test integrasi jika memungkinkan
-
----
-
-## 12. Commands Reference
+## 11. Commands Reference
 
 | Command              | Fungsi                                  |
 | -------------------- | --------------------------------------- |
@@ -519,9 +303,6 @@ global.fetch = mockFetch;
 | `bun run build`      | Build production bundle (dengan webpack)|
 | `bun start`          | Jalankan production server              |
 | `bun run lint`       | Jalankan ESLint                         |
-| `bun test`           | Jalankan semua unit test                |
-| `bun run test:watch` | Jalankan test dalam watch mode          |
-| `bun run test:cov`   | Jalankan test dengan coverage report    |
 | `bun install`        | Install semua dependencies              |
 | `bun add <pkg>`      | Tambah dependency baru                  |
 | `bun add -d <pkg>`   | Tambah dev dependency baru              |
@@ -530,10 +311,8 @@ global.fetch = mockFetch;
 
 ---
 
-## 13. Checklist Sebelum Push
+## 12. Checklist Sebelum Push
 
-- [ ] `bun test` — Semua test PASS
-- [ ] `bun run test:cov` — Coverage ≥ 80%
 - [ ] `bun run lint` — Tidak ada error
 - [ ] `bun run build` — Build sukses tanpa error
 - [ ] Tidak ada `console.log` yang tertinggal (gunakan `LOG_LEVEL`)
@@ -542,11 +321,10 @@ global.fetch = mockFetch;
 - [ ] Responsive di mobile dan desktop
 - [ ] Environment variables baru sudah ditambahkan ke `.env.example`
 - [ ] Translation tersedia di semua locale (`id.json` & `en.json`)
-- [ ] Setiap fungsi baru yang di-export memiliki unit test
 
 ---
 
-## 14. Rules untuk AI Agent
+## 13. Rules untuk AI Agent
 
 ### ✅ HARUS:
 1. **Baca `AGENTS.md`** dan **`GUIDELINE.md`** sebelum menulis kode
@@ -559,10 +337,7 @@ global.fetch = mockFetch;
 8. **Update `.env.example`** jika menambah env variable baru
 9. **Tambahkan translations** di kedua locale file (`id.json` & `en.json`)
 10. **Buat semua route** di bawah `app/[lang]/`
-11. **Buat unit test** untuk setiap fungsi/hook/utility baru yang di-export
-12. **Jalankan `bun test`** sebelum menganggap task selesai
-13. **Gunakan AAA pattern** (Arrange-Act-Assert) di setiap test case
-14. **Co-locate test files** — `*.test.ts(x)` di samping source file
+11. **Gunakan `next/image`** (`Image` component dari `next/image`) untuk semua gambar di component React/Next.js
 
 ### ❌ JANGAN:
 1. **JANGAN** menggunakan `pages/` directory
@@ -575,9 +350,7 @@ global.fetch = mockFetch;
 8. **JANGAN** menulis CSS inline — gunakan Tailwind classes
 9. **JANGAN** hardcode string UI — gunakan dictionary i18n
 10. **JANGAN** menggunakan `middleware.ts` — sudah deprecated, gunakan `proxy.ts`
-11. **JANGAN** push kode tanpa unit test — setiap fungsi yang di-export WAJIB punya test
-12. **JANGAN** menulis test tanpa assertion — setiap `it()` HARUS punya `expect()`
-13. **JANGAN** mock terlalu banyak — test real behavior jika memungkinkan
+11. **JANGAN** menggunakan tag HTML `<img>` biasa di component React/Next.js — selalu gunakan `next/image` untuk optimasi performa dan SEO
 
 ---
 
