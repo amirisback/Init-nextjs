@@ -344,6 +344,7 @@ style(ui): adjust header spacing
 10. **Buat semua route** di bawah `app/[lang]/`
 11. **Gunakan `next/image`** (`Image` component dari `next/image`) untuk semua gambar di component React/Next.js
 12. **Gunakan Flat Routing + SearchParams** saat membutuhkan ID atau state dari halaman/segmen sebelumnya.
+13. **⚠️ WAJIB HAPUS rute demo (`app/[lang]/demo-encryption/`)** saat mulai pengerjaan web riil agar rute demo ini tidak masuk ke build produksi.
 
 ### ❌ JANGAN:
 1. **JANGAN** menggunakan `pages/` directory
